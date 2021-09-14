@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="keywords" content="HTML, CSS, Bootstrap, JavaScript, Leaflet, AJAX, JSON, PHP" />
+  <meta name="description" content="Country Profiler With a Map" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="author" content="Sohail Mehmood" />
+  <title>The Gazetteer</title>
+
+  <!-- Easy Buttons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css" />
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="vendors/css/bootstrap.min.css" />
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="vendors/css/leaflet.css" />
+  <link rel="stylesheet" href="vendors/css/leaflet.extra-markers.min.css" />
+
+  <!-- Custom css -->
+  <link rel="stylesheet" href="libs/css/style.css" />
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png" />
+</head>
+
+<body>
+  <div class="loader-container">
+    <div class="loader"></div>
+  </div>
+  <div id="map_sibling_top">
+    <select class="form-control" id="country_list">
+      <option value="">Select Country</option>
+    </select>
+  </div>
+
+  <div id="country_info">
+    <div class="card m-10">
+      <div class="card-header bg-danger">
+        <button class="btn btn-dark" id="hide">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+        <h2 id="country_name"></h2>
+      </div>
+      <div class="card-body pb-10 bg-light">
+        <table class="table table-bordered table-sm table-striped">
+          <tr>
+            <th>Capital</th>
+            <td id="country_capital"></td>
+          </tr>
+          <tr>
+            <th>Population</th>
+            <td id="country_population"></td>
+          </tr>
+          <tr>
+            <th>Flag</th>
+            <td>
+              <img src="" id="country_flag" />
+            </td>
+          </tr>
+          <tr>
+            <th>Currency</th>
+            <td id="country_currency"></td>
+          </tr>
+          <tr>
+            <th>Currency Symbol</th>
+            <td id="country_currency_symbol"></td>
+          </tr>
+          <tr>
+            <th>Wikipedia Page</th>
+            <td>
+              <a href="" target="_blank" class="text-dark" id="country_wikipedia">Click Here</a>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn btn-primary pull_country_info_popup" id="show">
+    <i class="fas fa-arrow-right"></i>
+  </button>
+
+  <!-- Weather Data -->
+  <div class="modal" id="weatherModal">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+      <div class="modal-content">
+        <div class="modal-header bg-warning">
+          <h4 class="modal-title text-primary">Weather Details</h4>
+          <button type="button" class="btn btn-secondary closeWeather" data-dismiss="modal">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body bg-info" id="weather_data">
+          <div class="weather_card">
+            <h2 id="weather_city_name"></h2>
+            <h3 id="weather_description"></h3>
+            <div class="image_parent">
+              <img src="" width="100px" height="100px" />
+              <h1></h1>
+            </div>
+            <table class="table table-bordered table-sm table-dark">
+              <tr id="first_row"></tr>
+              <tr id="second_row"></tr>
+              <tr id="third_row"></tr>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer bg-warning">
+          <button type="button" class="btn btn-secondary closeWeather" data-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exchange Rate Data -->
+  <div class="modal" id="exchangeModal">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header bg-warning">
+          <h4 class="modal-title text-primary">Exchange Rate Details</h4>
+          <button type="button" class="btn btn-secondary closeExchange" data-dismiss="modal">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body bg-success">
+          <table class="table table-bordered table-sm table-dark table-striped">
+            <tr>
+              <th>€1 =</th>
+              <td id="euro"></td>
+            </tr>
+            <tr>
+              <th>$1 =</th>
+              <td id="dollar"></td>
+            </tr>
+            <tr>
+              <th>£1 =</th>
+              <td id="pound"></td>
+            </tr>
+          </table>
+        </div>
+        <div class="modal-footer bg-warning">
+          <button type="button" class="btn btn-secondary closeExchange" data-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Covid Data -->
+  <div class="modal fade" id="coronaModal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-warning">
+          <h4 class="modal-title text-primary">Covid Details</h4>
+          <button type="button" class="btn btn-secondary closeCorona" data-dismiss="modal">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body bg-danger" id="covid_data">
+          <table class="table table-bordered table-sm table-dark table-striped">
+            <tr>
+              <th>Total cases</th>
+              <td id="covid_total_cases"></td>
+            </tr>
+            <tr>
+              <th>Active</th>
+              <td id="covid_active"></td>
+            </tr>
+            <tr>
+              <th>Recovered</th>
+              <td id="covid_recovered"></td>
+            </tr>
+            <tr>
+              <th>Deaths</th>
+              <td id="covid_deaths"></td>
+            </tr>
+            <tr>
+              <th>Today cases</th>
+              <td id="covid_todayCases"></td>
+            </tr>
+            <tr>
+              <th>Today Recovered</th>
+              <td id="covid_todayRecovered"></td>
+            </tr>
+            <tr>
+              <th>Today Deaths</th>
+              <td id="covid_todayDeaths"></td>
+            </tr>
+          </table>
+        </div>
+        <div class="modal-footer bg-warning">
+          <button type="button" class="btn btn-secondary closeCorona" data-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- News Data -->
+  <div class="modal fade" id="newsModal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-warning">
+          <h4 class="modal-title text-primary">Latest News</h4>
+          <button type="button" class="btn btn-secondary closeNews" data-dismiss="modal">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body bg-dark" id="news_data"></div>
+        <div class="modal-footer bg-warning">
+          <button type="button" class="btn btn-secondary closeNews" data-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  </div>
+  <div id="mapid"></div>
+  <script src="https://kit.fontawesome.com/ded3a80e56.js" crossorigin="anonymous"></script>
+  <script src="vendors/js/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+  <script src="vendors/js/spin.min.js"></script>
+  <script src="vendors/js/leaflet.spin.min.js"></script>
+  <script src="vendors/js/jquery-3.6.0.min.js"></script>
+  <script src="vendors/js/leaflet.extra-markers.min.js"></script>
+  <script src="vendors/js/bootstrap.bundle.min.js"></script>
+  <script src="vendors/js/numeral.min.js"></script>
+  <script src="libs/js/script.js"></script>
+</body>
+
+</html>
