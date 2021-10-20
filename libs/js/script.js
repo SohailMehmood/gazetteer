@@ -443,50 +443,6 @@ $(".closeExchange").click(function close_exchange() {
   $("#exchangeModal").modal("hide");
 });
 
-function get_covid_data() {
-  map.spin(true);
-  $.ajax({
-    url: "libs/php/covid.php",
-    type: "GET",
-    data: {
-      country_code: country_code_global,
-    },
-    success: function (response) {
-      let details = $.parseJSON(response);
-      let cases = numeral(details.cases).format("0a", "0.0a");
-      let active = numeral(details.active).format("0a", "0.0a");
-      let recovered = numeral(details.recovered).format("0a", "0.0a");
-      let deaths = numeral(details.deaths).format("0a", "0.0a");
-      let todayCases = numeral(details.todayCases).format("0a", "0.0a");
-      let todayRecovered = numeral(details.todayRecovered).format("0a", "0.0a");
-      let todayDeaths = numeral(details.todayDeaths).format("0a", "0.0a");
-      $("#covid_total_cases").html(cases);
-      $("#covid_active").html(active);
-      $("#covid_recovered").html(recovered);
-      $("#covid_deaths").html(deaths);
-      $("#covid_todayCases").html(todayCases);
-      $("#covid_todayRecovered").html(todayRecovered);
-      $("#covid_todayDeaths").html(todayDeaths);
-
-      map.spin(false);
-      $("#coronaModal").modal("show");
-    },
-  });
-}
-
-L.easyButton(
-  "fa-shield-virus",
-  function (btn) {
-    get_covid_data();
-  },
-  "Covid Data"
-).addTo(map);
-
-$(".closeCorona").click(function close_corona() {
-  $("#coronaModal").modal("hide");
-});
-
-
 function get_news_data() {
   $("#news_data").html("");
   map.spin(true);
